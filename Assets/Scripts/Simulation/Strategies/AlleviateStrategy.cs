@@ -8,6 +8,7 @@ public sealed class AlleviateStrategy : LoadBalancingStrategy
 
     public override IEnumerator<LoadBalancingAction> Balance(Processor source, List<Processor> otherProcessors)
     {
+        LoadQueries = 0;
         if (source.Load < SimulationManager.Instance.simulationSettings.processorLoadThreshold / 100f)
         {
             yield return new LoadBalancingAction
@@ -27,7 +28,6 @@ public sealed class AlleviateStrategy : LoadBalancingStrategy
             if (target.Load > SimulationManager.Instance.simulationSettings.processorLoadThreshold / 100f)
             {
                 int count = (int)(target.ProcessCount * SimulationManager.Instance.simulationSettings.alleviateProcessPercentage / 100f);
-                Migrations += count;
                 yield return new LoadBalancingAction
                 {
                     Type = LoadBalancingActionType.ReceiveProcess,

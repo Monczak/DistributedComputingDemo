@@ -8,6 +8,7 @@ public sealed class DelegateStrategy : LoadBalancingStrategy
 
     public override IEnumerator<LoadBalancingAction> Balance(Processor source, List<Processor> otherProcessors)
     {
+        LoadQueries = 0;
         if (source.Load > SimulationManager.Instance.simulationSettings.processorLoadThreshold / 100f)
         {
             List<Processor> processors = Shuffle(otherProcessors);
@@ -16,7 +17,6 @@ public sealed class DelegateStrategy : LoadBalancingStrategy
                 LoadQueries++;
                 if (target.Load < SimulationManager.Instance.simulationSettings.processorLoadThreshold / 100f)
                 {
-                    Migrations++;
                     yield return new LoadBalancingAction
                     {
                         Type = LoadBalancingActionType.SendProcess,

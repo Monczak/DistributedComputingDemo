@@ -27,7 +27,8 @@ public class VisualizationManager : MonoBehaviour
         foreach (ProcessorController processor in processorManager.processorControllers)
         {
             ProcessSpawner spawner = processor.GetComponent<ProcessSpawner>();
-            spawner.Initialize(SimulationManager.Instance.Random.Next());
+            spawner.Initialize(SimulationManager.Instance.Random.Next(), 
+                Mathf.Lerp(0.5f, 1.5f, (float)SimulationManager.Instance.Random.NextDouble()));
         }
 
         cameraMovement.SetZoomOutRadius(GetCameraRadiusToFit());

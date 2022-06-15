@@ -53,7 +53,7 @@ public class OptionsMenu : MonoBehaviour
         askAroundAttemptsInput.onValueChanged.AddListener(s => OnAskAroundAttemptsUpdate(s));
         alleviateMinLoadInput.onValueChanged.AddListener(s => OnAlleviateMinLoadUpdate(s));
         simulationSpeedInput.onValueChanged.AddListener(s => OnSimulationSpeedUpdate(s));
-        simulationSpeedInput.onValueChanged.AddListener(s => OnSimulationSeedUpdate(s));
+        simulationSeedInput.onValueChanged.AddListener(s => OnSimulationSeedUpdate(s));
     }
 
     private void OnLoadBalancingStrategyChanged()

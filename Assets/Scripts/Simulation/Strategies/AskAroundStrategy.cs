@@ -8,6 +8,7 @@ public sealed class AskAroundStrategy : LoadBalancingStrategy
 
     public override IEnumerator<LoadBalancingAction> Balance(Processor source, List<Processor> otherProcessors)
     {
+        LoadQueries = 0;
         for (int i = 0; i < SimulationManager.Instance.simulationSettings.askAroundAttempts; i++)
         {
             Processor target = otherProcessors[SimulationManager.Instance.Random.Next(otherProcessors.Count)];
@@ -15,7 +16,6 @@ public sealed class AskAroundStrategy : LoadBalancingStrategy
             LoadQueries++;
             if (target.Load < SimulationManager.Instance.simulationSettings.processorLoadThreshold / 100f)
             {
-                Migrations++;
                 yield return new LoadBalancingAction
                 {
                     Type = LoadBalancingActionType.SendProcess,

@@ -10,6 +10,8 @@ public class ProcessSpawner : MonoBehaviour
     private int interval;
     private float lastSpawnTime;
 
+    private float frequencyModifier;
+
     public delegate void NewProcessHandler(Process process);
     public event NewProcessHandler OnNewProcess;
 
@@ -25,9 +27,10 @@ public class ProcessSpawner : MonoBehaviour
         SimulationManager.Instance.Reset -= OnSimulationReset;
     }
 
-    public void Initialize(int seed)
+    public void Initialize(int seed, float frequencyModifier)
     {
         this.seed = seed;
+        this.frequencyModifier = frequencyModifier;
         InitializeRandom();
     }
 
@@ -41,7 +44,7 @@ public class ProcessSpawner : MonoBehaviour
 
     private void GetNewInterval()
     {
-        interval = random.Next(SimulationManager.Instance.simulationSettings.minProcessSpawnInterval, SimulationManager.Instance.simulationSettings.maxProcessSpawnInterval);
+        interval = (int)(random.Next(SimulationManager.Instance.simulationSettings.minProcessSpawnInterval, SimulationManager.Instance.simulationSettings.maxProcessSpawnInterval) / frequencyModifier);
     }
 
     private void OnSimulationReset(int time)

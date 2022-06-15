@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
     private void UpdateHUD()
     {
         meanLoadText.text = $"Mean Load: {processorManager.MeanLoad * 100f:0.00}%";
-        loadDeviationText.text = $"Load Deviation: {processorManager.LoadDeviation * 100f:0.00}";
+        loadDeviationText.text = $"Load Deviation: {processorManager.LoadDeviation * 100f:0.00}%";
         loadQueriesText.text = $"Load Queries: {processorManager.LoadQueries}";
         migrationsText.text = $"Migrations: {processorManager.Migrations}";
     }

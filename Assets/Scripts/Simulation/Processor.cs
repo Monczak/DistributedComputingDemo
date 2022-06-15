@@ -14,8 +14,8 @@ public class Processor : MonoBehaviour
     public float Load => load;
     public int ProcessCount => processes.Count;
 
-    public int LoadQueries => loadBalancingStrategy.LoadQueries;
-    public int Migrations => loadBalancingStrategy.Migrations;
+    public int LoadQueries { get; private set; }
+    public int Migrations { get; private set; }
 
     private Queue<Process> waitingProcesses;
 
@@ -48,6 +48,8 @@ public class Processor : MonoBehaviour
         processes = new List<Process>();
         waitingProcesses = new Queue<Process>();
         loadBalancingStrategy.Initialize();
+        LoadQueries = 0;
+        Migrations = 0;
 
         UpdateLoad();
     }
@@ -61,6 +63,8 @@ public class Processor : MonoBehaviour
 
         loadBalancingStrategy = strategy;
         loadBalancingStrategy.Initialize();
+        LoadQueries = 0;
+        Migrations = 0;
     }
 
     private void OnTick(int time)
@@ -80,12 +84,15 @@ public class Processor : MonoBehaviour
                         {
                             Log("Execute Locally");
                             ExecuteProcess(waitingProcesses.Dequeue());
+                            LoadQueries += loadBalancingStrategy.LoadQueries;
                         }
                         break;
                     case LoadBalancingActionType.SendProcess:
                         if (waitingProcesses.Count > 0)
                         {
                             Log("Send Process");
+                            LoadQueries += loadBalancingStrategy.LoadQueries;
+                            Migrations++;
                             action.TargetProcessor.ExecuteProcess(waitingProcesses.Dequeue());
                             manager.SendProcessBlocks(controller, action.TargetProcessor.controller, 1);
                         }
@@ -93,6 +100,8 @@ public class Processor : MonoBehaviour
                     case LoadBalancingActionType.ReceiveProcess:
                         Log("Receive Process");
                         manager.SendProcessBlocks(action.TargetProcessor.controller, controller, action.ProcessCount);
+                        LoadQueries += loadBalancingStrategy.LoadQueries;
+                        Migrations += action.ProcessCount;
                         for (int i = 0; i < action.ProcessCount; i++)
                         {
                             ExecuteProcess(action.TargetProcessor.PullRandomProcess());
