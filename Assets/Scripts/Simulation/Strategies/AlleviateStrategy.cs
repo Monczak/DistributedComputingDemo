@@ -37,6 +37,10 @@ public sealed class AlleviateStrategy : LoadBalancingStrategy
                 };
                 yield break;
             }
+            else yield return new LoadBalancingAction
+            {
+                Type = LoadBalancingActionType.DoNothing
+            };
         }
     }
 }

@@ -77,6 +77,7 @@ public class Processor : MonoBehaviour
             while (actionGenerator.MoveNext())
             {
                 LoadBalancingAction action = actionGenerator.Current;
+                LoadQueries += loadBalancingStrategy.LoadQueries;
                 switch (action.Type)
                 {
                     case LoadBalancingActionType.ExecuteLocally:
@@ -84,14 +85,13 @@ public class Processor : MonoBehaviour
                         {
                             Log("Execute Locally");
                             ExecuteProcess(waitingProcesses.Dequeue());
-                            LoadQueries += loadBalancingStrategy.LoadQueries;
                         }
                         break;
                     case LoadBalancingActionType.SendProcess:
                         if (waitingProcesses.Count > 0)
                         {
                             Log("Send Process");
-                            LoadQueries += loadBalancingStrategy.LoadQueries;
+                            
                             Migrations++;
                             action.TargetProcessor.ExecuteProcess(waitingProcesses.Dequeue());
                             manager.SendProcessBlocks(controller, action.TargetProcessor.controller, 1);
@@ -100,7 +100,7 @@ public class Processor : MonoBehaviour
                     case LoadBalancingActionType.ReceiveProcess:
                         Log("Receive Process");
                         manager.SendProcessBlocks(action.TargetProcessor.controller, controller, action.ProcessCount);
-                        LoadQueries += loadBalancingStrategy.LoadQueries;
+                        
                         Migrations += action.ProcessCount;
                         for (int i = 0; i < action.ProcessCount; i++)
                         {
